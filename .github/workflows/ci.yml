@@ -12,6 +12,12 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
+      # ============= InvisiRisk Setup =============
+      - name: Setup PSE
+        uses: invisirisk/pse-action@latest
+        with:
+          app_token: ${{secrets.IR_API_KEY}}
+      # ============= InvisiRisk Setup End =============
       - uses: actions/checkout@v3
       - name: Setup Python 3.12
         uses: actions/setup-python@v4
@@ -20,3 +26,10 @@ jobs:
       - run: pip install -U pip setuptools wheel
       - run: pip install pre-commit
       - run: pre-commit run --all-files
+      # ============= InvisiRisk Cleanup =============
+      - name: Cleanup PSE
+        if: always()
+        uses: invisirisk/pse-action@latest
+        with:
+          cleanup: "true"
+      # ============= InvisiRisk Cleanup End =============
